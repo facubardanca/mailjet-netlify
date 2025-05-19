@@ -8,6 +8,6 @@
   },
   "dependencies": {
     "node-fetch": "^2.6.9",
-    "mailjet": "^3.3.3"
+    "node-mailjet": "^3.3.1"
   }
 }
