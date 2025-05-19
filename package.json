@@ -1,0 +1,7 @@
+{
+  "name": "mailjet-netlify",
+  "version": "1.0.0",
+  "dependencies": {
+    "mailjet": "^3.3.1"
+  }
+}
