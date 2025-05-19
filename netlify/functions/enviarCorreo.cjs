@@ -4,6 +4,17 @@ const mailjet = require('node-mailjet').connect(
 );
 
 exports.handler = async function (event, context) {
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "https://facubardanca.com",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
+      body: ""
+    };
+  }
+
   const data = JSON.parse(event.body);
   const { energia, sueno, historia, dia, email } = data;
 
@@ -39,12 +50,21 @@ exports.handler = async function (event, context) {
 
     return {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "https://facubardanca.com",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
       body: JSON.stringify({ success: true })
     };
   } catch (err) {
     return {
       statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "https://facubardanca.com",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
       body: JSON.stringify({ error: err.message })
     };
   }
 };
+
