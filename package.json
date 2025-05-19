@@ -1,7 +1,8 @@
 {
   "name": "mailjet-netlify",
   "version": "1.0.0",
+  "type": "commonjs",
   "dependencies": {
-    "node-mailjet": "^3.3.1"
+    "node-mailjet": "^3.3.0"
   }
 }
