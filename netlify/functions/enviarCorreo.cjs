@@ -4,35 +4,31 @@ const mailjet = require('node-mailjet').connect(
 );
 
 exports.handler = async function (event, context) {
-  const headers = {
-    "Access-Control-Allow-Origin": "https://facubardanca.com",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "POST, OPTIONS"
-  };
-
-  // Permitir preflight requests (OPTIONS)
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
-      headers,
-      body: ''
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
+      body: ""
     };
   }
 
+  const data = JSON.parse(event.body);
+  const { energia, sueno, historia, dia, email } = data;
+
+  const message = `
+    ✉️ Nueva respuesta desde la web:
+
+    🔋 Energía deseada: ${energia}
+    🌌 Sueño profundo: ${sueno}
+    📖 Historia personal: ${historia}
+    📅 Día perfecto: ${dia}
+    📩 Email del usuario: ${email}
+  `;
+
   try {
-    const data = JSON.parse(event.body);
-    const { energia, sueno, historia, dia, email } = data;
-
-    const message = `
-✉️ Nueva respuesta desde la web:
-
-🔋 Energía deseada: ${energia}
-🌌 Sueño profundo: ${sueno}
-📖 Historia personal: ${historia}
-📅 Día perfecto: ${dia}
-📩 Email del usuario: ${email}
-`;
-
     await mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -54,14 +50,19 @@ exports.handler = async function (event, context) {
 
     return {
       statusCode: 200,
-      headers,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
       body: JSON.stringify({ success: true })
     };
-
   } catch (err) {
     return {
       statusCode: 500,
-      headers,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
       body: JSON.stringify({ error: err.message })
     };
   }
