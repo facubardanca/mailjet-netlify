@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "type": "commonjs",
   "dependencies": {
-    "node-mailjet": "^3.3.0"
+    "mailjet": "^3.3.1"
   }
 }
