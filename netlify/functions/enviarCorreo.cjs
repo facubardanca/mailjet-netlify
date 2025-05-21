@@ -20,15 +20,15 @@ exports.handler = async function (event, context) {
 
   const message = `
     ✉️ Nueva respuesta desde la web:
--
+
     🔋 Energía deseada: ${energia}
--
+
     🌌 Sueño profundo: ${sueno}
--
+
     📖 Historia personal: ${historia}
--
+
     📅 Día perfecto: ${dia}
--
+
     📩 Email del usuario: ${email}
   `;
 
@@ -38,7 +38,7 @@ exports.handler = async function (event, context) {
         {
           From: {
             Email: "privado@facubardanca.com",
-            Name: "LLegó una experiencia para crear Facu."
+            Name: "Llegó una experiencia para crear Facu."
           },
           To: [
             {
