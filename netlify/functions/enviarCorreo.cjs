@@ -4,6 +4,7 @@ const mailjet = require('node-mailjet').connect(
 );
 
 exports.handler = async function (event, context) {
+  // Manejo de preflight para CORS
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
@@ -15,20 +16,23 @@ exports.handler = async function (event, context) {
     };
   }
 
+  // Parseo de datos recibidos
   const data = JSON.parse(event.body);
   const { vital, sueno, historia, dia, email } = data;
 
+  // Construcción del mensaje
   const message = [
-  "✉️ Nueva respuesta desde la web:",
-  "",
-  `🔋 Energía deseada: ${vital}`,
-  `🌌 Sueño profundo: ${sueno}`,
-  `📖 Historia personal: ${historia}`,
-  `📅 Día perfecto: ${dia}`,
-  `📩 Email del usuario: ${email}`
-].join('\n');
+    "✉️ Nueva respuesta desde la web:",
+    "",
+    `🔋 Energía deseada: ${vital}`,
+    `🌌 Sueño profundo: ${sueno}`,
+    `📖 Historia personal: ${historia}`,
+    `📅 Día perfecto: ${dia}`,
+    `📩 Email del usuario: ${email}`
+  ].join('\n');
 
   try {
+    // Envío del correo con Mailjet
     await mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
@@ -48,20 +52,24 @@ exports.handler = async function (event, context) {
       ]
     });
 
+    // Respuesta exitosa
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ success: true })
     };
   } catch (err) {
+    // Respuesta ante error
     return {
       statusCode: 500,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ error: err.message })
     };
