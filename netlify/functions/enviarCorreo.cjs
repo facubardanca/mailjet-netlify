@@ -17,8 +17,21 @@ exports.handler = async function (event, context) {
   }
 
   // Parseo de datos recibidos
-  const data = JSON.parse(event.body);
-  const { vital, sueno, historia, dia, email } = data;
+ if (!event.body) {
+  return {
+    statusCode: 400,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ error: "No data provided" })
+  };
+}
+
+const data = JSON.parse(event.body);
+const { vital, sueno, historia, dia, email } = data;
+
 
   // Construcción del mensaje
   const message = [
