@@ -16,12 +16,12 @@ exports.handler = async function (event, context) {
   }
 
   const data = JSON.parse(event.body);
-  const { energia, sueno, historia, dia, email } = data;
+  const { vital, sueno, historia, dia, email } = data;
 
   const message = [
   "✉️ Nueva respuesta desde la web:",
   "",
-  `🔋 Energía deseada: ${energia}`,
+  `🔋 Energía deseada: ${vital}`,
   `🌌 Sueño profundo: ${sueno}`,
   `📖 Historia personal: ${historia}`,
   `📅 Día perfecto: ${dia}`,
