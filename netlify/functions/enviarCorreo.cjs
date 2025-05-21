@@ -18,19 +18,15 @@ exports.handler = async function (event, context) {
   const data = JSON.parse(event.body);
   const { energia, sueno, historia, dia, email } = data;
 
-  const message = `
-    ✉️ Nueva respuesta desde la web:
-
-    🔋 Energía deseada: ${energia}
-
-    🌌 Sueño profundo: ${sueno}
-
-    📖 Historia personal: ${historia}
-
-    📅 Día perfecto: ${dia}
-
-    📩 Email del usuario: ${email}
-  `;
+  const message = [
+  "✉️ Nueva respuesta desde la web:",
+  "",
+  `🔋 Energía deseada: ${energia}`,
+  `🌌 Sueño profundo: ${sueno}`,
+  `📖 Historia personal: ${historia}`,
+  `📅 Día perfecto: ${dia}`,
+  `📩 Email del usuario: ${email}`
+].join('\n');
 
   try {
     await mailjet.post('send', { version: 'v3.1' }).request({
