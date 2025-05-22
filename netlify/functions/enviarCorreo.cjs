@@ -4,50 +4,13 @@ const mailjet = require('node-mailjet').connect(
 );
 
 exports.handler = async function (event, context) {
-  if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "https://facubardanca.com",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Content-Type": "application/json"
-      },
-      body: ""
-    };
-  }
-
-  if (!event.body) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "https://facubardanca.com",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ error: "No data provided" })
-    };
-  }
-
-  const data = JSON.parse(event.body);
-  const { vital, sueno, historia, dia, email } = data;
-
-  const message = [
-    "✉️ Nueva respuesta desde la web:",
-    "",
-    `🔋 Energía deseada: ${vital}`,
-    `🌌 Sueño profundo: ${sueno}`,
-    `📖 Historia personal: ${historia}`,
-    `📅 Día perfecto: ${dia}`,
-    `📩 Email del usuario: ${email}`
-  ].join('\n');
-
   try {
     const result = await mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
           From: {
             Email: "privado@facubardanca.com",
-            Name: "Llegó una experiencia para crear Facu."
+            Name: "Facu Bardanca Web"
           },
           To: [
             {
@@ -55,8 +18,8 @@ exports.handler = async function (event, context) {
               Name: "Facundo"
             }
           ],
-          Subject: "Tenés una nueva experiencia para crear Facu. Ya sos.",
-          TextPart: message
+          Subject: "Test directo de envío Mailjet",
+          TextPart: "Este es un mensaje de prueba enviado directamente desde Netlify sin ningún campo dinámico. Si ves esto, Mailjet está funcionando bien."
         }
       ]
     });
@@ -86,4 +49,5 @@ exports.handler = async function (event, context) {
     };
   }
 };
+
 
