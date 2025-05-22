@@ -39,11 +39,17 @@ exports.handler = async function (event) {
   }
 
   const text = [
+    
     `🔋 Energía deseada: ${energiav}`,
+    
     `🌌 Sueño profundo: ${sueno}`,
+    
     `📖 Historia personal: ${historia}`,
+    
     `📅 Día perfecto: ${dia}`,
+    
     `📩 Email del usuario: ${email}`
+    
   ].join('\n');
 
   try {
