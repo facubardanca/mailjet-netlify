@@ -3,15 +3,25 @@ const mailjet = require('node-mailjet').connect(
   process.env.MJ_APIKEY_PRIVATE
 );
 
-exports.handler = async function () {
-  const vital = "ejemplo de vital";
-  const sueno = "sueño de prueba";
-  const historia = "historia de prueba";
-  const dia = "día perfecto de prueba";
-  const email = "facundobardanca@gmail.com";
+exports.handler = async function (event) {
+  // ✅ Manejo de preflight OPTIONS
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS"
+      },
+      body: "Preflight OK"
+    };
+  }
+
+  // ✅ Parseo del body real
+  const { energiav, sueno, historia, dia, email } = JSON.parse(event.body || "{}");
 
   const text = [
-    `🔋 Energía deseada: ${vital}`,
+    `🔋 Energía deseada: ${energiav}`,
     `🌌 Sueño profundo: ${sueno}`,
     `📖 Historia personal: ${historia}`,
     `📅 Día perfecto: ${dia}`,
@@ -32,7 +42,7 @@ exports.handler = async function () {
               Name: "Facundo"
             }
           ],
-          Subject: "🌀 Test forzado con formato real",
+          Subject: "🌀 Nuevo formulario completado",
           TextPart: text
         }
       ]
@@ -40,7 +50,10 @@ exports.handler = async function () {
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": "text/plain" },
+      headers: {
+        "Access-Control-Allow-Origin": "*", // podés limitar a tu dominio si querés
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
       body: "✅ CORREO ENVIADO CON ÉXITO"
     };
   } catch (err) {
@@ -51,7 +64,10 @@ exports.handler = async function () {
 
     return {
       statusCode: 500,
-      headers: { "Content-Type": "text/plain" },
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
       body: `❌ ERROR REAL DETECTADO:\n${full}`
     };
   }
