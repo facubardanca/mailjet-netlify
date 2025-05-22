@@ -3,44 +3,12 @@ const mailjet = require('node-mailjet').connect(
   process.env.MJ_APIKEY_PRIVATE
 );
 
-exports.handler = async function (event) {
-  if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "https://facubardanca.com",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Content-Type": "application/json"
-      },
-      body: ""
-    };
-  }
-
-  if (!event.body) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "https://facubardanca.com",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ error: "No data provided" })
-    };
-  }
-
-  const { vital, sueno, historia, dia, email } = JSON.parse(event.body);
-
-  if (!vital || !sueno || !historia || !dia || !email) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "https://facubardanca.com",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ error: "Faltan datos obligatorios" })
-    };
-  }
+exports.handler = async function () {
+  const vital = "ejemplo de vital";
+  const sueno = "sueño de prueba";
+  const historia = "historia de prueba";
+  const dia = "día perfecto de prueba";
+  const email = "facundobardanca@gmail.com";
 
   const text = [
     `🔋 Energía deseada: ${vital}`,
@@ -51,7 +19,7 @@ exports.handler = async function (event) {
   ].join('\n');
 
   try {
-    await mailjet.post('send', { version: 'v3.1' }).request({
+    const result = await mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
           From: {
@@ -64,7 +32,7 @@ exports.handler = async function (event) {
               Name: "Facundo"
             }
           ],
-          Subject: "🌀 Nueva respuesta desde la web",
+          Subject: "🌀 Test forzado con formato real",
           TextPart: text
         }
       ]
@@ -72,24 +40,19 @@ exports.handler = async function (event) {
 
     return {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "https://facubardanca.com",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ success: true })
+      headers: { "Content-Type": "text/plain" },
+      body: "✅ CORREO ENVIADO CON ÉXITO"
     };
   } catch (err) {
+    const message = err?.message || "Error desconocido";
+    const status = err?.statusCode || "Sin código";
+    const mailjetMsg = err?.response?.res?.statusMessage || "";
+    const full = `${message} — ${status} — ${mailjetMsg}`.trim();
+
     return {
       statusCode: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "https://facubardanca.com",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        error: err.message || "Error desconocido al enviar el correo"
-      })
+      headers: { "Content-Type": "text/plain" },
+      body: `❌ ERROR REAL DETECTADO:\n${full}`
     };
   }
 };
