@@ -4,36 +4,34 @@ const mailjet = require('node-mailjet').connect(
 );
 
 exports.handler = async function (event, context) {
-  // Manejo de preflight para CORS
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Content-Type": "application/json"
       },
       body: ""
     };
   }
 
-  // Parseo de datos recibidos
- if (!event.body) {
-  return {
-    statusCode: 400,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ error: "No data provided" })
-  };
-}
+  if (!event.body) {
+    console.log("❌ No se recibió body");
+    return {
+      statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ error: "No data provided" })
+    };
+  }
 
-const data = JSON.parse(event.body);
-const { vital, sueno, historia, dia, email } = data;
+  const data = JSON.parse(event.body);
+  const { vital, sueno, historia, dia, email } = data;
 
-
-  // Construcción del mensaje
   const message = [
     "✉️ Nueva respuesta desde la web:",
     "",
@@ -44,9 +42,11 @@ const { vital, sueno, historia, dia, email } = data;
     `📩 Email del usuario: ${email}`
   ].join('\n');
 
+  console.log("📨 Preparando envío de mail...");
+  console.log("📦 Datos recibidos:", data);
+
   try {
-    // Envío del correo con Mailjet
-    await mailjet.post('send', { version: 'v3.1' }).request({
+    const result = await mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
           From: {
@@ -65,7 +65,9 @@ const { vital, sueno, historia, dia, email } = data;
       ]
     });
 
-    // Respuesta exitosa
+    console.log("✅ Correo enviado correctamente");
+    console.log("📨 Mailjet response:", result.body);
+
     return {
       statusCode: 200,
       headers: {
@@ -76,7 +78,8 @@ const { vital, sueno, historia, dia, email } = data;
       body: JSON.stringify({ success: true })
     };
   } catch (err) {
-    // Respuesta ante error
+    console.error("❌ Error al enviar el correo:", err);
+
     return {
       statusCode: 500,
       headers: {
