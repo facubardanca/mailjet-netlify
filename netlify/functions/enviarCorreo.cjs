@@ -3,9 +3,55 @@ const mailjet = require('node-mailjet').connect(
   process.env.MJ_APIKEY_PRIVATE
 );
 
-exports.handler = async function (event, context) {
+exports.handler = async function (event) {
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "https://facubardanca.com",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Content-Type": "application/json"
+      },
+      body: ""
+    };
+  }
+
+  if (!event.body) {
+    return {
+      statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "https://facubardanca.com",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ error: "No data provided" })
+    };
+  }
+
+  const { vital, sueno, historia, dia, email } = JSON.parse(event.body);
+
+  if (!vital || !sueno || !historia || !dia || !email) {
+    return {
+      statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "https://facubardanca.com",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ error: "Faltan datos obligatorios" })
+    };
+  }
+
+  const text = [
+    `🔋 Energía deseada: ${vital}`,
+    `🌌 Sueño profundo: ${sueno}`,
+    `📖 Historia personal: ${historia}`,
+    `📅 Día perfecto: ${dia}`,
+    `📩 Email del usuario: ${email}`
+  ].join('\n');
+
   try {
-    const result = await mailjet.post('send', { version: 'v3.1' }).request({
+    await mailjet.post('send', { version: 'v3.1' }).request({
       Messages: [
         {
           From: {
@@ -18,8 +64,8 @@ exports.handler = async function (event, context) {
               Name: "Facundo"
             }
           ],
-          Subject: "Test directo de envío Mailjet",
-          TextPart: "Este es un mensaje de prueba enviado directamente desde Netlify sin ningún campo dinámico. Si ves esto, Mailjet está funcionando bien."
+          Subject: "🌀 Nueva respuesta desde la web",
+          TextPart: text
         }
       ]
     });
@@ -34,10 +80,6 @@ exports.handler = async function (event, context) {
       body: JSON.stringify({ success: true })
     };
   } catch (err) {
-    const mensaje = err?.message || "Error desconocido";
-    const detalle = err?.response?.res?.statusMessage || "";
-    const full = `${mensaje} — ${detalle}`.trim();
-
     return {
       statusCode: 500,
       headers: {
@@ -45,9 +87,9 @@ exports.handler = async function (event, context) {
         "Access-Control-Allow-Headers": "Content-Type",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ error: full })
+      body: JSON.stringify({
+        error: err.message || "Error desconocido al enviar el correo"
+      })
     };
   }
 };
-
-
