@@ -17,7 +17,6 @@ exports.handler = async function (event, context) {
   }
 
   if (!event.body) {
-    console.log("❌ No se recibió body");
     return {
       statusCode: 400,
       headers: {
@@ -31,9 +30,6 @@ exports.handler = async function (event, context) {
 
   const data = JSON.parse(event.body);
   const { vital, sueno, historia, dia, email } = data;
-
-  console.log("📨 Preparando envío...");
-  console.log("📦 Datos recibidos:", data);
 
   const message = [
     "✉️ Nueva respuesta desde la web:",
@@ -65,9 +61,6 @@ exports.handler = async function (event, context) {
       ]
     });
 
-    console.log("✅ Correo enviado correctamente.");
-    console.log("📨 Mailjet response:", result.body);
-
     return {
       statusCode: 200,
       headers: {
@@ -78,7 +71,9 @@ exports.handler = async function (event, context) {
       body: JSON.stringify({ success: true })
     };
   } catch (err) {
-    console.error("❌ Mailjet error:", err?.statusCode || "", err?.message || "", err?.response?.res?.statusMessage || "");
+    const mensaje = err?.message || "Error desconocido";
+    const detalle = err?.response?.res?.statusMessage || "";
+    const full = `${mensaje} — ${detalle}`.trim();
 
     return {
       statusCode: 500,
@@ -87,7 +82,8 @@ exports.handler = async function (event, context) {
         "Access-Control-Allow-Headers": "Content-Type",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ error: err.message || "Error desconocido al enviar el correo" })
+      body: JSON.stringify({ error: full })
     };
   }
 };
+
