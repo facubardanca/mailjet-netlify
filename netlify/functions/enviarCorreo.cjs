@@ -4,7 +4,7 @@ const mailjet = require('node-mailjet').connect(
 );
 
 exports.handler = async function (event) {
-  // ✅ Manejo de preflight OPTIONS
+  // ✅ Manejo de preflight CORS
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
@@ -17,8 +17,26 @@ exports.handler = async function (event) {
     };
   }
 
-  // ✅ Parseo del body real
-  const { energiav, sueno, historia, dia, email } = JSON.parse(event.body || "{}");
+  // ✅ Parsear datos reales
+  let energiav = "", sueno = "", historia = "", dia = "", email = "";
+
+  try {
+    const data = JSON.parse(event.body || "{}");
+    energiav = data.energiav || "";
+    sueno = data.sueno || "";
+    historia = data.historia || "";
+    dia = data.dia || "";
+    email = data.email?.trim() || "";
+  } catch (err) {
+    return {
+      statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ success: false, error: "Body inválido" })
+    };
+  }
 
   const text = [
     `🔋 Energía deseada: ${energiav}`,
@@ -51,10 +69,10 @@ exports.handler = async function (event) {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*", // podés limitar a tu dominio si querés
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
       },
-      body: "✅ CORREO ENVIADO CON ÉXITO"
+      body: JSON.stringify({ success: true })
     };
   } catch (err) {
     const message = err?.message || "Error desconocido";
@@ -66,9 +84,9 @@ exports.handler = async function (event) {
       statusCode: 500,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Content-Type": "application/json"
       },
-      body: `❌ ERROR REAL DETECTADO:\n${full}`
+      body: JSON.stringify({ success: false, error: full })
     };
   }
 };
