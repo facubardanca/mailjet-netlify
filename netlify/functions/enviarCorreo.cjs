@@ -42,11 +42,11 @@ exports.handler = async function (event) {
     
     `🔋 Energía deseada: ${energiav}`,
     
-    `🌌 Sueño profundo: ${sueno}`,
+    `🌌 Recuerdo: ${sueno}`,
     
-    `📖 Historia personal: ${historia}`,
+    `📖 Creencia: ${historia}`,
     
-    `📅 Día perfecto: ${dia}`,
+    `📅 Escena: ${dia}`,
     
     `📩 Email del usuario: ${email}`
     
