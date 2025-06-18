@@ -37,20 +37,19 @@ exports.handler = async function (event) {
   }
 
   const html = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #111;">
-      <h2 style="margin-bottom: 12px;">🌀 Nuevo formulario completado</h2>
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 10px; color: #111;">
 
       <p style="margin: 0 0 8px;"><strong>🔋 Energía deseada:</strong></p>
-      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 10px;">${energiav}</p>
+      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 12px;">${energiav}</p>
 
       <p style="margin: 20px 0 8px;"><strong>🌌 Recuerdo:</strong></p>
-      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 10px;">${sueno}</p>
+      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 12px;">${sueno}</p>
 
       <p style="margin: 20px 0 8px;"><strong>📖 Creencia:</strong></p>
-      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 10px;">${historia}</p>
+      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 12px;">${historia}</p>
 
       <p style="margin: 20px 0 8px;"><strong>📅 Escena:</strong></p>
-      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 10px;">${dia}</p>
+      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 12px;">${dia}</p>
 
       <hr style="margin: 32px 0; border: none; border-top: 1px solid #ddd;">
 
@@ -65,7 +64,7 @@ exports.handler = async function (event) {
         {
           From: {
             Email: "privado@facubardanca.com",
-            Name: "Facu Bardanca Web"
+            Name: "Facu"
           },
           To: [
             {
@@ -73,7 +72,7 @@ exports.handler = async function (event) {
               Name: "Facundo"
             }
           ],
-          Subject: "🌀 Nuevo formulario completado",
+          Subject: "Una nueva Experiencia que Crear",
           HTMLPart: html
         }
       ]
