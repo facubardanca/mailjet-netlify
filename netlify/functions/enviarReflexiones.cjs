@@ -16,23 +16,7 @@ exports.handler = async function (event, context) {
     }
 
     const body = JSON.parse(event.body || '{}');
-    const { respuesta1 = '', respuesta2 = '', respuesta3 = '', nombre = '' } = body;
-
-    const texto = `
-📩 Nuevo envío desde Formulario Vibracional:
-
-🙋‍♂️ Nombre de quien respondió:
-${nombre}
-
-🌀 ¿Qué parte de vos te trajo hasta acá?
-${respuesta1}
-
-🌱 ¿Qué sentís que podría revelarse si vivís esta experiencia?
-${respuesta2}
-
-🔓 ¿Hay algo que necesitás que yo sepa antes de abrir esta puerta con vos?
-${respuesta3}
-`;
+    const { nombre = '', respuesta1 = '', respuesta2 = '', respuesta3 = '' } = body;
 
     const mailjetClient = mailjet.connect(
       process.env.MJ_APIKEY_PUBLIC,
@@ -45,8 +29,8 @@ ${respuesta3}
         Messages: [
           {
             From: {
-              Email: 'no-responder@facubardanca.com',
-              Name: 'Facu Web',
+              Email: 'privado@facubardanca.com',
+              Name: 'Nueva respuesta [Formulario Vibracional]',
             },
             To: [
               {
@@ -55,7 +39,28 @@ ${respuesta3}
               },
             ],
             Subject: '🌀 Nueva respuesta introspectiva',
-            TextPart: texto,
+            HTMLPart: `
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; color: #111;">
+                <h2 style="margin-bottom: 8px;">🌀 Nueva respuesta introspectiva</h2>
+
+                <p style="margin: 0 0 16px;"><strong>👤 Nombre:</strong><br>${nombre}</p>
+
+                <hr style="border: none; border-top: 1px solid #ccc; margin: 24px 0;">
+
+                <p style="margin: 0 0 8px;"><strong>🧩 ¿Qué parte de vos te trajo hasta acá?</strong></p>
+                <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 12px; border-radius: 8px;">${respuesta1}</p>
+
+                <p style="margin: 24px 0 8px;"><strong>🌱 ¿Qué sentís que podría revelarse si vivís esta experiencia?</strong></p>
+                <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 12px; border-radius: 8px;">${respuesta2}</p>
+
+                <p style="margin: 24px 0 8px;"><strong>🔓 ¿Hay algo que necesitás que yo sepa antes de abrir esta puerta con vos?</strong></p>
+                <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 12px; border-radius: 8px;">${respuesta3}</p>
+
+                <hr style="border: none; border-top: 1px solid #ccc; margin: 32px 0 12px;">
+
+                <p style="font-size: 14px; color: #666;">📬 Este mensaje fue enviado automáticamente desde la web del formulario vibracional.</p>
+              </div>
+            `,
           },
         ],
       });
