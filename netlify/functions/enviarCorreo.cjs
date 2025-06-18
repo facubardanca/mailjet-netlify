@@ -4,7 +4,6 @@ const mailjet = require('node-mailjet').connect(
 );
 
 exports.handler = async function (event) {
-  // ✅ Manejo de preflight CORS
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
@@ -17,7 +16,6 @@ exports.handler = async function (event) {
     };
   }
 
-  // ✅ Parsear datos reales
   let energiav = "", sueno = "", historia = "", dia = "", email = "";
 
   try {
@@ -38,19 +36,28 @@ exports.handler = async function (event) {
     };
   }
 
-  const text = [
-    
-    `🔋 Energía deseada: ${energiav}`,
-    
-    `🌌 Recuerdo: ${sueno}`,
-    
-    `📖 Creencia: ${historia}`,
-    
-    `📅 Escena: ${dia}`,
-    
-    `📩 Email del usuario: ${email}`
-    
-  ].join('\n');
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #111;">
+      <h2 style="margin-bottom: 12px;">🌀 Nuevo formulario completado</h2>
+
+      <p style="margin: 0 0 8px;"><strong>🔋 Energía deseada:</strong></p>
+      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 10px;">${energiav}</p>
+
+      <p style="margin: 20px 0 8px;"><strong>🌌 Recuerdo:</strong></p>
+      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 10px;">${sueno}</p>
+
+      <p style="margin: 20px 0 8px;"><strong>📖 Creencia:</strong></p>
+      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 10px;">${historia}</p>
+
+      <p style="margin: 20px 0 8px;"><strong>📅 Escena:</strong></p>
+      <p style="white-space: pre-wrap; background-color: #f8f8f8; padding: 10px; border-radius: 10px;">${dia}</p>
+
+      <hr style="margin: 32px 0; border: none; border-top: 1px solid #ddd;">
+
+      <p style="font-size: 13px;"><strong>📩 Email del usuario:</strong> ${email}</p>
+      <p style="font-size: 12px; color: #666;">Este mensaje fue enviado automáticamente desde la web principal.</p>
+    </div>
+  `;
 
   try {
     const result = await mailjet.post('send', { version: 'v3.1' }).request({
@@ -67,7 +74,7 @@ exports.handler = async function (event) {
             }
           ],
           Subject: "🌀 Nuevo formulario completado",
-          TextPart: text
+          HTMLPart: html
         }
       ]
     });
