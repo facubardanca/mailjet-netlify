@@ -16,10 +16,13 @@ exports.handler = async function (event, context) {
     }
 
     const body = JSON.parse(event.body || '{}');
-    const { respuesta1 = '', respuesta2 = '', respuesta3 = '' } = body;
+    const { respuesta1 = '', respuesta2 = '', respuesta3 = '', nombre = '' } = body;
 
     const texto = `
-📩 Nuevo envío desde la página introspectiva:
+📩 Nuevo envío desde Formulario Vibracional:
+
+🙋‍♂️ Nombre de quien respondió:
+${nombre}
 
 🌀 ¿Qué parte de vos te trajo hasta acá?
 ${respuesta1}
